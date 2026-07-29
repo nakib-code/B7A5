@@ -9,7 +9,7 @@ export const loginSchema = z.object({
     .min(6, "Password must be at least 6 characters"),
 });
 
-export type LoginSchema = z.infer<typeof loginSchema>;
+export type LoginValues = z.infer<typeof loginSchema>;
 
 export const registerSchema = z
   .object({
@@ -33,4 +33,4 @@ export const registerSchema = z
     message: "Passwords do not match",
   });
 
-export type RegisterSchema = z.infer<typeof registerSchema>;
+export type RegisterValues = z.infer<typeof registerSchema>;

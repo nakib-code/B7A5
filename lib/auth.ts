@@ -1,26 +1,44 @@
+import axiosInstance from "@/lib/axios";
+import { LoginValues, RegisterSchema } from "@/schemas/auth.schema";
 import Cookies from "js-cookie";
-import { AUTH_TOKEN, REFRESH_TOKEN } from "@/constants/auth";
 
 export const setTokens = (
   accessToken: string,
   refreshToken: string
 ) => {
-  Cookies.set(AUTH_TOKEN, accessToken, {
+  Cookies.set("accessToken", accessToken, {
     expires: 7,
-    sameSite: "lax",
   });
 
-  Cookies.set(REFRESH_TOKEN, refreshToken, {
+  Cookies.set("refreshToken", refreshToken, {
     expires: 30,
-    sameSite: "lax",
   });
 };
 
-export const clearTokens = () => {
-  Cookies.remove(AUTH_TOKEN);
-  Cookies.remove(REFRESH_TOKEN);
+export const logout = () => {
+  Cookies.remove("accessToken");
+  Cookies.remove("refreshToken");
 };
 
-export const getToken = () => {
-  return Cookies.get(AUTH_TOKEN);
+
+export const loginUser = async (
+  payload: LoginValues
+) => {
+  const { data } = await axiosInstance.post(
+    "/auth/login",
+    payload
+  );
+
+  return data;
+};
+
+export const registerUser = async (
+  payload: RegisterSchema
+) => {
+  const { data } = await axiosInstance.post(
+    "/auth/register",
+    payload
+  );
+
+  return data;
 };

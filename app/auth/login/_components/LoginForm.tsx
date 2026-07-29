@@ -1,14 +1,75 @@
 "use client";
 
 import Link from "next/link";
-import { Eye, EyeOff, Wrench } from "lucide-react";
+import { Eye, EyeOff, Loader2, Wrench } from "lucide-react";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+import { toast } from "sonner";
+
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+
+import { loginSchema, LoginValues } from "@/schemas/auth.schema";
+
+import { loginUser } from "@/services/auth/auth.api";
+import { setTokens } from "@/lib/auth";
 
 export default function LoginForm() {
+  const router = useRouter();
+
   const [showPassword, setShowPassword] = useState(false);
 
+  const [loading, setLoading] = useState(false);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginValues>({
+    resolver: zodResolver(loginSchema),
+  });
+
+  const onSubmit = async (values: LoginValues) => {
+    try {
+      setLoading(true);
+
+      const response = await loginUser(values);
+
+      setTokens(
+        response.data.accessToken,
+        response.data.refreshToken
+      );
+
+      toast.success(response.message);
+
+      switch (response.data.user.role) {
+        case "ADMIN":
+          router.push("/dashboard/admin");
+          break;
+
+        case "TECHNICIAN":
+          router.push("/dashboard/technician");
+          break;
+
+        default:
+          router.push("/dashboard/customer");
+      }
+    } catch (error: any) {
+      toast.error(
+        error?.response?.data?.message ??
+          "Login Failed"
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <div className="w-full max-w-md rounded-2xl bg-white shadow-xl p-8">
+    <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-xl">
       <div className="flex justify-center">
         <div className="rounded-full bg-blue-100 p-4">
           <Wrench className="h-10 w-10 text-blue-600" />
@@ -16,62 +77,98 @@ export default function LoginForm() {
       </div>
 
       <div className="mt-5 text-center">
-        <h1 className="text-3xl font-bold">🔧 FixItNow</h1>
-        <p className="mt-2 text-gray-500">Welcome Back!</p>
+        <h1 className="text-3xl font-bold">
+          🔧 FixItNow
+        </h1>
+
+        <p className="mt-2 text-gray-500">
+          Welcome Back!
+        </p>
       </div>
 
-      <form className="mt-8 space-y-5">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="mt-8 space-y-5"
+      >
         <div>
-          <label className="mb-2 block text-sm font-medium">Email</label>
-          <input
+          <label className="mb-2 block text-sm font-medium">
+            Email
+          </label>
+
+          <Input
             type="email"
             placeholder="Enter your email"
-            className="w-full rounded-lg border px-4 py-3 focus:border-blue-500 focus:outline-none"
+            {...register("email")}
           />
+
+          {errors.email && (
+            <p className="mt-1 text-sm text-red-500">
+              {errors.email.message}
+            </p>
+          )}
         </div>
 
         <div>
-          <label className="mb-2 block text-sm font-medium">Password</label>
+          <label className="mb-2 block text-sm font-medium">
+            Password
+          </label>
 
           <div className="relative">
-            <input
-              type={showPassword ? "text" : "password"}
-              placeholder="Enter your password"
-              className="w-full rounded-lg border px-4 py-3 pr-12 focus:border-blue-500 focus:outline-none"
+            <Input
+              type={
+                showPassword
+                  ? "text"
+                  : "password"
+              }
+              placeholder="Enter password"
+              className="pr-10"
+              {...register("password")}
             />
 
             <button
               type="button"
-              onClick={() => setShowPassword((prev) => !prev)}
+              onClick={() =>
+                setShowPassword(!showPassword)
+              }
               className="absolute right-3 top-1/2 -translate-y-1/2"
             >
-              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              {showPassword ? (
+                <EyeOff size={18} />
+              ) : (
+                <Eye size={18} />
+              )}
             </button>
           </div>
+
+          {errors.password && (
+            <p className="mt-1 text-sm text-red-500">
+              {errors.password.message}
+            </p>
+          )}
         </div>
 
-        <div className="text-right">
-          <Link
-            href="/forgot-password"
-            className="text-sm text-blue-600 hover:underline"
-          >
-            Forgot Password?
-          </Link>
-        </div>
-
-        <button
+        <Button
           type="submit"
-          className="w-full rounded-lg bg-blue-600 py-3 font-semibold text-white hover:bg-blue-700"
+          className="w-full"
+          disabled={loading}
         >
-          Login
-        </button>
+          {loading ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+
+              Logging in...
+            </>
+          ) : (
+            "Login"
+          )}
+        </Button>
       </form>
 
       <p className="mt-6 text-center text-sm">
         Don&apos;t have an account?{" "}
         <Link
-          href="/register"
-          className="font-semibold text-blue-600 hover:underline"
+          href="/auth/register"
+          className="font-semibold text-blue-600"
         >
           Register
         </Link>
