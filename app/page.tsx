@@ -1,5 +1,6 @@
-import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+import { decodeToken } from "@/lib/decode-token";
 
 export default async function Home() {
   const cookieStore = await cookies();
@@ -11,5 +12,16 @@ export default async function Home() {
     redirect("/auth/login");
   }
 
-  redirect("/dashboard/customer");
+  const user = decodeToken(token);
+
+  switch (user.role) {
+    case "ADMIN":
+      redirect("/dashboard/admin");
+
+    case "TECHNICIAN":
+      redirect("/dashboard/technician");
+
+    default:
+      redirect("/dashboard/customer");
+  }
 }

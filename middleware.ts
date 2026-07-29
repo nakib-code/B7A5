@@ -1,29 +1,55 @@
 import { NextRequest, NextResponse } from "next/server";
+import { jwtDecode } from "jwt-decode";
 
-export function middleware(
-  request: NextRequest
-) {
-  const token =
-    request.cookies.get("accessToken")?.value;
+type Payload = {
+  role: "ADMIN" | "CUSTOMER" | "TECHNICIAN";
+};
 
-  const pathname = request.nextUrl.pathname;
+export function middleware(req: NextRequest) {
+  const token = req.cookies.get("accessToken")?.value;
 
-  if (
-    pathname.startsWith("/dashboard") &&
-    !token
-  ) {
-    return NextResponse.redirect(
-      new URL("/auth/login", request.url)
-    );
+  const { pathname } = req.nextUrl;
+
+  // Not logged in
+  if (!token) {
+    if (pathname.startsWith("/dashboard")) {
+      return NextResponse.redirect(
+        new URL("/auth/login", req.url)
+      );
+    }
+
+    return NextResponse.next();
   }
 
+  const user = jwtDecode<Payload>(token);
+
+  // Prevent authenticated users from opening auth pages
+  if (pathname.startsWith("/auth")) {
+    return NextResponse.redirect(new URL("/", req.url));
+  }
+
+  // Admin routes
   if (
-    pathname.startsWith("/auth") &&
-    token
+    pathname.startsWith("/dashboard/admin") &&
+    user.role !== "ADMIN"
   ) {
-    return NextResponse.redirect(
-      new URL("/", request.url)
-    );
+    return NextResponse.redirect(new URL("/", req.url));
+  }
+
+  // Technician routes
+  if (
+    pathname.startsWith("/dashboard/technician") &&
+    user.role !== "TECHNICIAN"
+  ) {
+    return NextResponse.redirect(new URL("/", req.url));
+  }
+
+  // Customer routes
+  if (
+    pathname.startsWith("/dashboard/customer") &&
+    user.role !== "CUSTOMER"
+  ) {
+    return NextResponse.redirect(new URL("/", req.url));
   }
 
   return NextResponse.next();

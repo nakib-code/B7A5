@@ -1,5 +1,5 @@
 import axiosInstance from "@/lib/axios";
-import { LoginValues, RegisterSchema } from "@/schemas/auth.schema";
+import { LoginValues, RegisterValues, } from "@/schemas/auth.schema";
 import Cookies from "js-cookie";
 
 export const setTokens = (
@@ -33,7 +33,7 @@ export const loginUser = async (
 };
 
 export const registerUser = async (
-  payload: RegisterSchema
+  payload: RegisterValues
 ) => {
   const { data } = await axiosInstance.post(
     "/auth/register",
@@ -41,4 +41,22 @@ export const registerUser = async (
   );
 
   return data;
+};
+
+import {
+  AUTH_TOKEN,
+  REFRESH_TOKEN,
+} from "@/constants/auth";
+
+
+
+
+export const clearTokens = () => {
+  Cookies.remove(AUTH_TOKEN);
+  Cookies.remove(REFRESH_TOKEN);
+};
+
+
+export const getToken = () => {
+  return Cookies.get(AUTH_TOKEN);
 };
