@@ -1,19 +1,16 @@
 "use client";
 
-
-import { getTechnicians } from "@/services/services/technician.api";
 import { useQuery } from "@tanstack/react-query";
 
+import { getTechnicians } from "@/services/technician/technician.api";
+import { Technician } from "@/types/technician";
 
 
 export const useTechnicians = () => {
 
-  return useQuery({
-
-    queryKey:["technicians"],
-
-    queryFn:getTechnicians,
-
+  return useQuery<Technician[]>({
+    queryKey: ["technicians"],
+    queryFn: getTechnicians,
   });
 
 };
