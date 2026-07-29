@@ -10,9 +10,12 @@ export function middleware(req: NextRequest) {
 
   const { pathname } = req.nextUrl;
 
-  // Not logged in
   if (!token) {
-    if (pathname.startsWith("/dashboard")) {
+    if (
+      pathname.startsWith("/dashboard") ||
+      pathname === "/" ||
+      pathname.startsWith("/services")
+    ) {
       return NextResponse.redirect(
         new URL("/auth/login", req.url)
       );
@@ -21,40 +24,60 @@ export function middleware(req: NextRequest) {
     return NextResponse.next();
   }
 
-  const user = jwtDecode<Payload>(token);
+  try {
+    const user = jwtDecode<Payload>(token);
 
-  // Prevent authenticated users from opening auth pages
-  if (pathname.startsWith("/auth")) {
-    return NextResponse.redirect(new URL("/", req.url));
+    if (pathname.startsWith("/auth")) {
+      return NextResponse.redirect(
+        new URL("/", req.url)
+      );
+    }
+
+    if (
+      pathname.startsWith("/dashboard/admin") &&
+      user.role !== "ADMIN"
+    ) {
+      return NextResponse.redirect(
+        new URL(`/dashboard/${user.role.toLowerCase()}`, req.url)
+      );
+    }
+
+    if (
+      pathname.startsWith("/dashboard/customer") &&
+      user.role !== "CUSTOMER"
+    ) {
+      return NextResponse.redirect(
+        new URL(`/dashboard/${user.role.toLowerCase()}`, req.url)
+      );
+    }
+
+    if (
+      pathname.startsWith("/dashboard/technician") &&
+      user.role !== "TECHNICIAN"
+    ) {
+      return NextResponse.redirect(
+        new URL(`/dashboard/${user.role.toLowerCase()}`, req.url)
+      );
+    }
+
+    return NextResponse.next();
+  } catch {
+    const res = NextResponse.redirect(
+      new URL("/auth/login", req.url)
+    );
+
+    res.cookies.delete("accessToken");
+    res.cookies.delete("refreshToken");
+
+    return res;
   }
-
-  // Admin routes
-  if (
-    pathname.startsWith("/dashboard/admin") &&
-    user.role !== "ADMIN"
-  ) {
-    return NextResponse.redirect(new URL("/", req.url));
-  }
-
-  // Technician routes
-  if (
-    pathname.startsWith("/dashboard/technician") &&
-    user.role !== "TECHNICIAN"
-  ) {
-    return NextResponse.redirect(new URL("/", req.url));
-  }
-
-  // Customer routes
-  if (
-    pathname.startsWith("/dashboard/customer") &&
-    user.role !== "CUSTOMER"
-  ) {
-    return NextResponse.redirect(new URL("/", req.url));
-  }
-
-  return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/auth/:path*"],
+  matcher: [
+    "/",
+    "/services/:path*",
+    "/dashboard/:path*",
+    "/auth/:path*",
+  ],
 };

@@ -14,23 +14,44 @@ export default function DashboardNavbar() {
 
   const logout = () => {
     clearTokens();
+
     router.push("/auth/login");
+    router.refresh();
   };
+
+  const dashboardTitle = (() => {
+    switch (user?.role) {
+      case "ADMIN":
+        return "Admin Dashboard";
+
+      case "TECHNICIAN":
+        return "Technician Dashboard";
+
+      default:
+        return "Customer Dashboard";
+    }
+  })();
 
   return (
     <header className="flex h-16 items-center justify-between border-b bg-white px-6">
-      <h2 className="text-xl font-semibold">
-        Dashboard
-      </h2>
+      <div>
+        <h2 className="text-xl font-semibold">
+          {dashboardTitle}
+        </h2>
+
+        <p className="text-sm text-gray-500">
+          Welcome back!
+        </p>
+      </div>
 
       <div className="flex items-center gap-4">
         <div className="text-right">
           <p className="font-medium">
-            {user?.email}
+            {user?.email ?? "Guest"}
           </p>
 
           <p className="text-sm capitalize text-gray-500">
-            {user?.role?.toLowerCase()}
+            {user?.role?.toLowerCase() ?? ""}
           </p>
         </div>
 

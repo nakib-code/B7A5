@@ -34,39 +34,30 @@ export default function LoginForm() {
   });
 
   const onSubmit = async (values: LoginValues) => {
-    try {
-      setLoading(true);
+  try {
+    setLoading(true);
 
-      const response = await loginUser(values);
+    const response = await loginUser(values);
+    console.log(response);
 
-      setTokens(
-        response.data.accessToken,
-        response.data.refreshToken
-      );
+    setTokens(
+      response.data.accessToken,
+      response.data.refreshToken
+    );
 
-      toast.success(response.message);
+    toast.success(response.message);
 
-      switch (response.data.user.role) {
-        case "ADMIN":
-          router.push("/dashboard/admin");
-          break;
-
-        case "TECHNICIAN":
-          router.push("/dashboard/technician");
-          break;
-
-        default:
-          router.push("/dashboard/customer");
-      }
-    } catch (error: any) {
-      toast.error(
-        error?.response?.data?.message ??
-          "Login Failed"
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
+    router.push("/");
+    router.refresh();
+  } catch (error: any) {
+    toast.error(
+      error?.response?.data?.message ??
+        "Login Failed"
+    );
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-xl">
