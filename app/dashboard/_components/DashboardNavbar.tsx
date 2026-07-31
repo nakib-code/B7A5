@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 export default function DashboardNavbar() {
   const router = useRouter();
 
-  const user = useCurrentUser();
+  const { user, isLoading } = useCurrentUser();
 
   const logout = () => {
     clearTokens();
@@ -36,7 +36,7 @@ export default function DashboardNavbar() {
     <header className="flex h-16 items-center justify-between border-b bg-white px-6">
       <div>
         <h2 className="text-xl font-semibold">
-          {dashboardTitle}
+          {isLoading ? "Loading..." : dashboardTitle}
         </h2>
 
         <p className="text-sm text-gray-500">
@@ -47,11 +47,15 @@ export default function DashboardNavbar() {
       <div className="flex items-center gap-4">
         <div className="text-right">
           <p className="font-medium">
-            {user?.email ?? "Guest"}
+            {isLoading ? "Loading..." : user?.name ?? "Guest"}
+          </p>
+
+          <p className="text-sm text-gray-500">
+            {isLoading ? "" : user?.email}
           </p>
 
           <p className="text-sm capitalize text-gray-500">
-            {user?.role?.toLowerCase() ?? ""}
+            {isLoading ? "" : user?.role?.toLowerCase()}
           </p>
         </div>
 

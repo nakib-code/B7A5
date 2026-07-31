@@ -25,3 +25,9 @@ export const registerUser = async (
 
   return data;
 };
+
+export const getCurrentUser = async () => {
+  const { data } = await axiosInstance.get("/auth/me");
+  console.log(data);
+  return data.data;
+};

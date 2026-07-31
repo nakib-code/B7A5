@@ -5,9 +5,7 @@ import CategoryCard from "./CategoryCard";
 
 export default function Categories() {
   const { data, isLoading } = useCategories();
-  console.log(data);
   
-
   if (isLoading) {
     return (
       <section className="container mx-auto px-4 py-20">

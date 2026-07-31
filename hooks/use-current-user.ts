@@ -1,15 +1,18 @@
 "use client";
 
-import { useMemo } from "react";
-import Cookies from "js-cookie";
-import { decodeToken } from "@/lib/decode-token";
+import { useQuery } from "@tanstack/react-query";
+import { getCurrentUser } from "@/services/auth/auth.api";
 
-export function useCurrentUser() {
-  return useMemo(() => {
-    const token = Cookies.get("accessToken");
+export const useCurrentUser = () => {
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["current-user"],
+    queryFn: getCurrentUser,
+    retry: false,
+  });
 
-    if (!token) return null;
-
-    return decodeToken(token);
-  }, []);
-}
+  return {
+    user: data,
+    isLoading,
+    isError,
+  };
+};

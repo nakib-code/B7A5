@@ -1,8 +1,7 @@
 import { z } from "zod";
 
 export const loginSchema = z.object({
-  email: z
-    .email("Please enter a valid email address"),
+  email: z.email("Please enter a valid email address"),
 
   password: z
     .string()
@@ -17,14 +16,15 @@ export const registerSchema = z
       .string()
       .min(3, "Name must be at least 3 characters"),
 
-    email: z
-      .email("Please enter a valid email"),
+    email: z.email("Please enter a valid email"),
 
     password: z
       .string()
       .min(6, "Password must be at least 6 characters"),
 
-    confirmPassword: z.string(),
+    confirmPassword: z
+      .string()
+      .min(6, "Confirm password is required"),
 
     role: z.enum(["CUSTOMER", "TECHNICIAN"]),
   })

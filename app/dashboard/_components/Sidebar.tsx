@@ -11,12 +11,18 @@ import {
   Users,
   Wrench,
   DollarSign,
+  House,
 } from "lucide-react";
 
 import { useCurrentUser } from "@/hooks/use-current-user";
 
 const menus = {
   CUSTOMER: [
+    {
+      title: "Home",
+      href: "/",
+      icon: House,
+    },
     {
       title: "Dashboard",
       href: "/dashboard/customer",
@@ -41,6 +47,11 @@ const menus = {
 
   TECHNICIAN: [
     {
+      title: "Home",
+      href: "/",
+      icon: House,
+    },
+    {
       title: "Dashboard",
       href: "/dashboard/technician",
       icon: LayoutDashboard,
@@ -63,6 +74,11 @@ const menus = {
   ],
 
   ADMIN: [
+    {
+      title: "Home",
+      href: "/",
+      icon: House,
+    },
     {
       title: "Dashboard",
       href: "/dashboard/admin",
@@ -89,17 +105,33 @@ const menus = {
 export default function Sidebar() {
   const pathname = usePathname();
 
-  const user = useCurrentUser();
+  const { user, isLoading } = useCurrentUser();
 
-  const items =
-    menus[user?.role ?? "CUSTOMER"];
+  if (isLoading) {
+    return (
+      <aside className="hidden w-64 border-r bg-white md:block">
+        <div className="p-6">
+          <h1 className="text-2xl font-bold text-blue-600">
+            🔧 FixItNow
+          </h1>
+        </div>
+      </aside>
+    );
+  }
+
+  const role =
+    (user?.role as keyof typeof menus) ?? "CUSTOMER";
+
+  const items = menus[role];
 
   return (
     <aside className="hidden w-64 border-r bg-white md:block">
       <div className="border-b p-6">
-        <h1 className="text-2xl font-bold text-blue-600">
-          🔧 FixItNow
-        </h1>
+        <Link href="/">
+          <h1 className="text-2xl font-bold text-blue-600">
+            🔧 FixItNow
+          </h1>
+        </Link>
       </div>
 
       <nav className="space-y-2 p-4">
@@ -107,7 +139,8 @@ export default function Sidebar() {
           const Icon = item.icon;
 
           const active =
-            pathname === item.href;
+            pathname === item.href ||
+            pathname.startsWith(item.href + "/");
 
           return (
             <Link
@@ -120,7 +153,6 @@ export default function Sidebar() {
               }`}
             >
               <Icon size={18} />
-
               <span>{item.title}</span>
             </Link>
           );

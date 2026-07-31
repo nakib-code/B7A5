@@ -1,5 +1,4 @@
 "use client";
-
 import Link from "next/link";
 import { Eye, EyeOff, Loader2, Wrench } from "lucide-react";
 import { useState } from "react";
@@ -14,16 +13,13 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 import { loginSchema, LoginValues } from "@/schemas/auth.schema";
-
-import { loginUser } from "@/services/auth/auth.api";
 import { setTokens } from "@/lib/auth";
+import { useLogin } from "@/hooks/use-login";
 
 export default function LoginForm() {
   const router = useRouter();
-
+  const { mutateAsync, isPending } = useLogin();
   const [showPassword, setShowPassword] = useState(false);
-
-  const [loading, setLoading] = useState(false);
 
   const {
     register,
@@ -35,15 +31,11 @@ export default function LoginForm() {
 
   const onSubmit = async (values: LoginValues) => {
   try {
-    setLoading(true);
+    const response = await mutateAsync(values);
 
-    const response = await loginUser(values);
-    console.log(response);
+    const { accessToken, refreshToken } = response.data;
 
-    setTokens(
-      response.data.accessToken,
-      response.data.refreshToken
-    );
+    setTokens(accessToken, refreshToken);
 
     toast.success(response.message);
 
@@ -51,11 +43,8 @@ export default function LoginForm() {
     router.refresh();
   } catch (error: any) {
     toast.error(
-      error?.response?.data?.message ??
-        "Login Failed"
+      error?.response?.data?.message || "Login Failed"
     );
-  } finally {
-    setLoading(false);
   }
 };
 
@@ -141,9 +130,9 @@ export default function LoginForm() {
         <Button
           type="submit"
           className="w-full"
-          disabled={loading}
+          disabled={isPending}
         >
-          {loading ? (
+          {isPending ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
 

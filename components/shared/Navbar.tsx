@@ -2,14 +2,24 @@
 
 import Link from "next/link";
 import { Menu, Wrench } from "lucide-react";
+
 import { useCurrentUser } from "@/hooks/use-current-user";
 
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 
 import { Button } from "@/components/ui/button";
 
 export default function Navbar() {
-  const user = useCurrentUser();
+  const { user, isLoading } = useCurrentUser();
+
+  console.log({
+  user,
+  isLoading,
+});
 
   const navLinks = [
     {
@@ -28,7 +38,6 @@ export default function Navbar() {
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2">
           <Wrench className="h-7 w-7 text-blue-600" />
-
           <span className="text-xl font-bold">FixItNow</span>
         </Link>
 
@@ -47,64 +56,77 @@ export default function Navbar() {
 
         {/* Desktop Buttons */}
         <div className="hidden items-center gap-3 md:flex">
-          {user ? (
+          {isLoading ? null : user ? (
             <Link href={`/dashboard/${user.role.toLowerCase()}`}>
               <Button>Dashboard</Button>
             </Link>
           ) : (
             <>
               <Link href="/auth/login">
-                <Button variant="outline">Login</Button>
+                <Button variant="outline">
+                  Login
+                </Button>
               </Link>
 
               <Link href="/auth/register">
-                <Button>Register</Button>
+                <Button>
+                  Register
+                </Button>
               </Link>
             </>
           )}
         </div>
 
-        {/* Mobile */}
-        <Sheet>
-          <SheetTrigger>
-            <button
-              type="button"
-              className="inline-flex h-9 w-9 items-center justify-center rounded-lg hover:bg-slate-100 md:hidden"
-            >
+        {/* Mobile Menu */}
+        <div className="md:hidden">
+          <Sheet>
+            <SheetTrigger className="inline-flex h-9 w-9 items-center justify-center rounded-lg hover:bg-slate-100">
               <Menu className="h-6 w-6" />
-            </button>
-          </SheetTrigger>
+            </SheetTrigger>
 
-          <SheetContent side="right">
-            <div className="mt-8 flex flex-col gap-5">
-              {navLinks.map((link) => (
-                <Link key={link.href} href={link.href}>
-                  {link.title}
-                </Link>
-              ))}
+            <SheetContent side="right">
+              <div className="mt-8 flex flex-col gap-5">
+                {navLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                  >
+                    {link.title}
+                  </Link>
+                ))}
 
-              <hr />
+                <hr />
 
-              {user ? (
-                <Link href={`/dashboard/${user.role.toLowerCase()}`}>
-                  <Button className="w-full">Dashboard</Button>
-                </Link>
-              ) : (
-                <>
-                  <Link href="/auth/login">
-                    <Button variant="outline" className="w-full">
-                      Login
+                {isLoading ? null : user ? (
+                  <Link
+                    href={`/dashboard/${user.role.toLowerCase()}`}
+                  >
+                    <Button className="w-full">
+                      Dashboard
                     </Button>
                   </Link>
+                ) : (
+                  <>
+                    <Link href="/auth/login">
+                      <Button
+                        variant="outline"
+                        className="w-full"
+                      >
+                        Login
+                      </Button>
+                    </Link>
 
-                  <Link href="/auth/register">
-                    <Button className="w-full">Register</Button>
-                  </Link>
-                </>
-              )}
-            </div>
-          </SheetContent>
-        </Sheet>
+                    <Link href="/auth/register">
+                      <Button className="w-full">
+                        Register
+                      </Button>
+                    </Link>
+                  </>
+                )}
+              </div>
+            </SheetContent>
+          </Sheet>
+        </div>
       </div>
     </header>
   );
