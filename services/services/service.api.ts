@@ -64,3 +64,11 @@ export const updateService = async ({
 export const deleteService = async (id: string) => {
   await axiosInstance.delete(`/services/${id}`);
 };
+
+export const getTechnicianBookings = async () => {
+  const { data } = await axiosInstance.get(
+    "/technician/bookings"
+  );
+
+  return data.data;
+};

@@ -33,8 +33,8 @@ const menus = [
     icon: PlusCircle,
   },
   {
-    title: "Bookings",
-    href: "/dashboard/technician/bookings",
+    title: "requests",
+    href: "/dashboard/technician/requests",
     icon: CalendarDays,
   },
   {

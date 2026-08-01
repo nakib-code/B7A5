@@ -1,9 +1,9 @@
 "use client";
 
-import { updateBookingStatus } from "@/services/technician/technician.api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
+import { updateBookingStatus } from "@/services/technician/technician.api";
 
 export const useUpdateBookingStatus = () => {
   const queryClient = useQueryClient();
@@ -22,7 +22,7 @@ export const useUpdateBookingStatus = () => {
     onError: (error: any) => {
       toast.error(
         error?.response?.data?.message ??
-          "Failed to update booking status"
+          "Failed to update status"
       );
     },
   });
