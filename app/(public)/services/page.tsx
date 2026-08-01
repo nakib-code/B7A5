@@ -15,7 +15,6 @@ export default function ServicesPage() {
   const { data: services, isLoading, isError } =
     useServices(search, category);
 
-  // loading/error আগের মতো থাকবে
 
   return (
     <section className="container mx-auto px-4 py-16">

@@ -21,3 +21,8 @@ export const getServices = async (
 
   return data.data;
 };
+
+export const getSingleService = async (id: string) => {
+  const { data } = await axiosInstance.get(`/services/${id}`);
+  return data.data;
+};

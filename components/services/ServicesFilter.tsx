@@ -1,57 +1,85 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import {
+  usePathname,
+  useRouter,
+  useSearchParams,
+} from "next/navigation";
+
 import { Input } from "@/components/ui/input";
 import { useCategories } from "@/hooks/use-categories";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { ICategory } from "@/types/category";
 
 export default function ServicesFilter() {
-  const { data: categories } = useCategories();
+  const { data: categories = [] } = useCategories();
 
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const handleSearch = (value: string) => {
-    const params = new URLSearchParams(searchParams.toString());
+  const [search, setSearch] = useState(
+    searchParams.get("search") ?? ""
+  );
 
-    if (value) {
-      params.set("search", value);
-    } else {
-      params.delete("search");
-    }
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      const currentSearch = searchParams.get("search") ?? "";
 
-    router.push(`${pathname}?${params.toString()}`);
-  };
+      if (search === currentSearch) return;
 
-  const handleCategory = (value: string) => {
-    const params = new URLSearchParams(searchParams.toString());
+      const params = new URLSearchParams(
+        searchParams.toString()
+      );
 
-    if (value) {
-      params.set("category", value);
+      if (search.trim()) {
+        params.set("search", search);
+      } else {
+        params.delete("search");
+      }
+
+      router.replace(`${pathname}?${params.toString()}`);
+    }, 500);
+
+    return () => clearTimeout(timeout);
+  }, [search]);
+
+  const handleCategory = (
+    e: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    const params = new URLSearchParams(
+      searchParams.toString()
+    );
+
+    if (e.target.value) {
+      params.set("category", e.target.value);
     } else {
       params.delete("category");
     }
 
-    router.push(`${pathname}?${params.toString()}`);
+    router.replace(`${pathname}?${params.toString()}`);
   };
 
   return (
     <div className="mb-8 grid gap-4 md:grid-cols-2">
       <Input
-        placeholder="Search service..."
-        defaultValue={searchParams.get("search") ?? ""}
-        onChange={(e) => handleSearch(e.target.value)}
+        placeholder="Search services..."
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
       />
 
       <select
-        className="rounded-md border p-2"
-        defaultValue={searchParams.get("category") ?? ""}
-        onChange={(e) => handleCategory(e.target.value)}
+        className="h-10 rounded-md border border-input bg-background px-3 text-sm"
+        value={searchParams.get("category") ?? ""}
+        onChange={handleCategory}
       >
         <option value="">All Categories</option>
 
-        {categories?.map((category: { id: string; slug: string; name: string }) => (
-          <option key={category.id} value={category.slug}>
+        {categories.map((category: ICategory) => (
+          <option
+            key={category.id}
+            value={category.name}
+          >
             {category.name}
           </option>
         ))}
