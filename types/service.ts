@@ -32,3 +32,11 @@ export interface Service {
     };
   };
 }
+
+export interface TCreateService {
+  title: string;
+  description: string;
+  categoryId: string;
+  price: number;
+  duration: number;
+}

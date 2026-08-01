@@ -12,3 +12,26 @@ export const getTechnicians = async (): Promise<Technician[]> => {
   return data.data;
 
 };
+
+export const updateBookingStatus = async ({
+  id,
+  status,
+}: {
+  id: string;
+  status: string;
+}) => {
+  const { data } = await axiosInstance.patch(
+    `/technician/bookings/${id}`,
+    {
+      status,
+    }
+  );
+
+  return data.data;
+};
+
+export const getTechnicianBookings = async () => {
+  const { data } = await axiosInstance.get("/technician/bookings");
+
+  return data.data;
+};

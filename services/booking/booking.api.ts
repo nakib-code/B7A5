@@ -26,3 +26,4 @@ export const cancelBooking = async (bookingId: string) => {
 
   return data.data;
 };
+

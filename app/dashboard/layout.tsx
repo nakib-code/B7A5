@@ -1,7 +1,7 @@
-import DashboardNavbar from "@/app/dashboard/_components/DashboardNavbar";
-import Sidebar from "@/app/dashboard/_components/Sidebar";
 import { ReactNode } from "react";
 
+import DashboardNavbar from "./_components/DashboardNavbar";
+import Sidebar from "./_components/Sidebar";
 
 export default function DashboardLayout({
   children,
@@ -9,16 +9,21 @@ export default function DashboardLayout({
   children: ReactNode;
 }) {
   return (
-    <div className="flex min-h-screen bg-slate-100">
-      <Sidebar />
+    <div className="min-h-screen bg-slate-100">
+      {/* Top Navbar */}
+      <DashboardNavbar />
 
-      <main className="flex flex-1 flex-col">
-        <DashboardNavbar />
+      <div className="mx-auto flex max-w-7xl">
+        {/* Sidebar */}
+        <Sidebar />
 
-        <section className="flex-1 p-6">
-          {children}
-        </section>
-      </main>
+        {/* Main Content */}
+        <main className="flex-1 overflow-y-auto p-6">
+          <div className="rounded-xl bg-white p-6 shadow-sm">
+            {children}
+          </div>
+        </main>
+      </div>
     </div>
   );
 }
