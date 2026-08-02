@@ -12,9 +12,9 @@ import {
 
 
 import { getMyServices, getTechnicianBookings } from "@/services/services/service.api";
-import DashboardCard from "@/app/dashboard/technician/_components/DashboardCard";
 import RecentBookings from "@/app/dashboard/technician/_components/RecentBookings";
 import RecentServices from "@/app/dashboard/technician/_components/RecentServices";
+import DashboardCard from "@/components/admin/dashboard/DashboardCard";
 
 
 

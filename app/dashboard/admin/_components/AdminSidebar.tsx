@@ -9,6 +9,7 @@ import {
   Wrench,
   CalendarDays,
   FolderTree,
+  User,
 } from "lucide-react";
 
 const menus = [
@@ -33,14 +34,14 @@ const menus = [
     icon: FolderTree,
   },
   {
-    title: "Services",
-    href: "/dashboard/admin/services",
-    icon: Wrench,
-  },
-  {
     title: "Bookings",
     href: "/dashboard/admin/bookings",
     icon: CalendarDays,
+  },
+  {
+    title: "Profile",
+    href: "/dashboard/admin/profile",
+    icon: User,
   },
 ];
 
