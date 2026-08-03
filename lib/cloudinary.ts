@@ -18,11 +18,13 @@ export const uploadImageToCloudinary = async (
     }
   );
 
-  if (!response.ok) {
-    throw new Error("Image upload failed");
-  }
-
   const data = await response.json();
+
+  console.log(data);
+
+  if (!response.ok) {
+    throw new Error(data.error?.message || "Image upload failed");
+  }
 
   return data.secure_url;
 };
