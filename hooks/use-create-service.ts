@@ -2,6 +2,7 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+
 import { createService } from "@/services/services/service.api";
 
 export const useCreateService = () => {
@@ -13,8 +14,14 @@ export const useCreateService = () => {
     onSuccess: () => {
       toast.success("Service created successfully");
 
+      // Admin service list refresh
       queryClient.invalidateQueries({
-        queryKey: ["my-services"],
+        queryKey: ["admin-services"],
+      });
+
+      // যদি customer service list থাকে
+      queryClient.invalidateQueries({
+        queryKey: ["services"],
       });
     },
 

@@ -1,13 +1,14 @@
 "use client";
 
-import { getSingleService } from "@/services/services/service.api";
 import { useQuery } from "@tanstack/react-query";
 
+import { getSingleService } from "@/services/services/service.api";
+import { Service } from "@/types/service";
 
 export const useSingleService = (id: string) => {
-  return useQuery({
+  return useQuery<Service>({
     queryKey: ["service", id],
     queryFn: () => getSingleService(id),
-    enabled: !!id,
+    enabled: Boolean(id),
   });
 };

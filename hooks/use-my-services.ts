@@ -8,5 +8,6 @@ export const useMyServices = () => {
   return useQuery<Service[]>({
     queryKey: ["my-services"],
     queryFn: getMyServices,
+    staleTime: 0,
   });
 };

@@ -14,8 +14,14 @@ export const useDeleteService = () => {
     onSuccess: () => {
       toast.success("Service deleted successfully");
 
+      // Admin service list refresh
       queryClient.invalidateQueries({
-        queryKey: ["my-services"],
+        queryKey: ["admin-services"],
+      });
+
+      // Customer service list থাকলে refresh
+      queryClient.invalidateQueries({
+        queryKey: ["services"],
       });
     },
 

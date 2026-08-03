@@ -12,14 +12,14 @@ import {
 
 const menus = [
   {
-    title: "Home",
-    href: "/",
-    icon: House,
-  },
-  {
     title: "Dashboard",
     href: "/dashboard/customer",
     icon: LayoutDashboard,
+  },
+  {
+    title: "Home",
+    href: "/",
+    icon: House,
   },
   {
     title: "Services",

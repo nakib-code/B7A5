@@ -1,4 +1,4 @@
-import axiosInstance from "@/lib/axios";
+import { axiosInstance } from "@/lib/axios";
 import { Service, TCreateService } from "@/types/service";
 
 export const getServices = async (

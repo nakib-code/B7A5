@@ -3,37 +3,36 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
-import { updateBookingStatus } from "@/services/technician/technician.api";
+import {
+  updateTechnicianProfile,
+} from "@/services/technician/technician.api";
 
-export const useUpdateBookingStatus = () => {
+export const useUpdateTechnicianProfile = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: updateBookingStatus,
+    mutationFn: updateTechnicianProfile,
 
     onSuccess: () => {
-      toast.success("Booking status updated");
+      toast.success("Profile updated successfully.");
 
-      // Technician dashboard refresh
       queryClient.invalidateQueries({
-        queryKey: ["technician-bookings"],
+        queryKey: ["technician-profile"],
       });
 
-      // Customer dashboard refresh
       queryClient.invalidateQueries({
-        queryKey: ["my-bookings"],
+        queryKey: ["current-user"],
       });
 
-      // Admin dashboard থাকলে
       queryClient.invalidateQueries({
-        queryKey: ["admin-bookings"],
+        queryKey: ["technicians"],
       });
     },
 
     onError: (error: any) => {
       toast.error(
         error?.response?.data?.message ??
-          "Failed to update status"
+          "Failed to update profile."
       );
     },
   });

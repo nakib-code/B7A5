@@ -1,23 +1,39 @@
 "use client";
 
+import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-
-import { clearTokens } from "@/lib/auth";
-import { useCurrentUser } from "@/hooks/use-current-user";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
+import { useCurrentUser } from "@/hooks/use-current-user";
+import { useLogout } from "@/hooks/useLogout";
+
 
 export default function DashboardNavbar() {
   const router = useRouter();
 
-  const { user, isLoading } = useCurrentUser();
+  const {
+    user,
+    isLoading,
+  } = useCurrentUser();
 
-  const logout = () => {
-    clearTokens();
+  const {
+    mutate: logout,
+    isPending,
+  } = useLogout();
 
-    router.push("/auth/login");
-    router.refresh();
+
+  const handleLogout = () => {
+    logout(undefined, {
+      onSuccess: () => {
+        toast.success("Logout successful");
+
+        router.replace("/auth/login");
+        router.refresh();
+      },
+    });
   };
+
 
   const dashboardTitle = (() => {
     switch (user?.role) {
@@ -27,13 +43,18 @@ export default function DashboardNavbar() {
       case "TECHNICIAN":
         return "Technician Dashboard";
 
-      default:
+      case "CUSTOMER":
         return "Customer Dashboard";
+
+      default:
+        return "Dashboard";
     }
   })();
 
+
   return (
     <header className="flex h-16 items-center justify-between border-b bg-white px-6">
+
       <div>
         <h2 className="text-xl font-semibold">
           {isLoading ? "Loading..." : dashboardTitle}
@@ -44,28 +65,54 @@ export default function DashboardNavbar() {
         </p>
       </div>
 
+
       <div className="flex items-center gap-4">
+
         <div className="text-right">
+
           <p className="font-medium">
-            {isLoading ? "Loading..." : user?.name ?? "Guest"}
+            {
+              isLoading
+                ? "Loading..."
+                : user?.name ?? "User"
+            }
           </p>
+
 
           <p className="text-sm text-gray-500">
-            {isLoading ? "" : user?.email}
+            {user?.email ?? ""}
           </p>
 
+
           <p className="text-sm capitalize text-gray-500">
-            {isLoading ? "" : user?.role?.toLowerCase()}
+            {user?.role?.toLowerCase() ?? ""}
           </p>
+
         </div>
+
 
         <Button
           variant="destructive"
-          onClick={logout}
+          onClick={handleLogout}
+          disabled={isPending}
         >
-          Logout
+
+          {
+            isPending ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Logging out...
+              </>
+            ) : (
+              "Logout"
+            )
+          }
+
         </Button>
+
+
       </div>
+
     </header>
   );
 }

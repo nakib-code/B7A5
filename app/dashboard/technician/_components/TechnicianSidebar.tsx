@@ -13,14 +13,14 @@ import {
 
 const menus = [
   {
-    title: "Home",
-    href: "/",
-    icon: House,
-  },
-  {
     title: "Dashboard",
     href: "/dashboard/technician",
     icon: LayoutDashboard,
+  },
+  {
+    title: "Home",
+    href: "/",
+    icon: House,
   },
   {
     title: "My Services",

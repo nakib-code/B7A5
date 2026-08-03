@@ -6,22 +6,22 @@ import {
   House,
   LayoutDashboard,
   Users,
-  Wrench,
   CalendarDays,
   FolderTree,
   User,
 } from "lucide-react";
 
 const menus = [
-  {
-    title: "Home",
-    href: "/",
-    icon: House,
-  },
+  
   {
     title: "Dashboard",
     href: "/dashboard/admin",
     icon: LayoutDashboard,
+  },
+  {
+    title: "Home",
+    href: "/",
+    icon: House,
   },
   {
     title: "Users",

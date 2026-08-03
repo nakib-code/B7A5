@@ -1,5 +1,6 @@
 "use client";
 
+import axios from "axios";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
@@ -11,19 +12,23 @@ export const useCreateCategory = () => {
   return useMutation({
     mutationFn: createCategory,
 
-    onSuccess: () => {
-      toast.success("Category created successfully");
+    onSuccess: async () => {
+      toast.success("Category created successfully.");
 
-      queryClient.invalidateQueries({
+      await queryClient.invalidateQueries({
         queryKey: ["admin-categories"],
       });
     },
 
-    onError: (error: any) => {
-      toast.error(
-        error?.response?.data?.message ??
-          "Failed to create category"
-      );
+    onError: (error) => {
+      if (axios.isAxiosError(error)) {
+        toast.error(
+          error.response?.data?.message ??
+            "Failed to create category."
+        );
+      } else {
+        toast.error("Something went wrong.");
+      }
     },
   });
 };

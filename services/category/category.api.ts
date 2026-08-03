@@ -1,4 +1,4 @@
-import axiosInstance from "@/lib/axios";
+import { axiosInstance } from "@/lib/axios";
 import { ICategory } from "@/types/category";
 
 export const getCategories = async (): Promise<ICategory[]> => {

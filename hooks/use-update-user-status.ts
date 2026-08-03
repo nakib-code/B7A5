@@ -12,7 +12,7 @@ export const useUpdateUserStatus = () => {
     mutationFn: updateUserStatus,
 
     onSuccess: () => {
-      toast.success("User status updated");
+      toast.success("User status updated successfully");
 
       queryClient.invalidateQueries({
         queryKey: ["admin-users"],
@@ -21,7 +21,7 @@ export const useUpdateUserStatus = () => {
 
     onError: (error: any) => {
       toast.error(
-        error?.response?.data?.message ??
+        error?.response?.data?.message ||
           "Failed to update user status"
       );
     },

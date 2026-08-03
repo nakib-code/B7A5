@@ -2,6 +2,7 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+
 import { updateCategory } from "@/services/category/category.api";
 
 export const useUpdateCategory = () => {
@@ -11,8 +12,14 @@ export const useUpdateCategory = () => {
     mutationFn: updateCategory,
 
     onSuccess: () => {
-      toast.success("Category updated");
+      toast.success("Category updated successfully");
 
+      // Admin category list refresh
+      queryClient.invalidateQueries({
+        queryKey: ["admin-categories"],
+      });
+
+      // Customer category list থাকলে refresh
       queryClient.invalidateQueries({
         queryKey: ["categories"],
       });
@@ -20,7 +27,7 @@ export const useUpdateCategory = () => {
 
     onError: (error: any) => {
       toast.error(
-        error.response?.data?.message ??
+        error?.response?.data?.message ??
           "Failed to update category"
       );
     },

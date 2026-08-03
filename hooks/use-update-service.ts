@@ -17,6 +17,11 @@ export const useUpdateService = () => {
       queryClient.invalidateQueries({
         queryKey: ["my-services"],
       });
+
+      // Customer service list update হবে
+      queryClient.invalidateQueries({
+        queryKey: ["services"],
+      });
     },
 
     onError: (error: any) => {

@@ -1,6 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
+
 import { Service } from "@/types/service";
 import { getServices } from "@/services/services/service.api";
 
@@ -10,6 +11,12 @@ export const useServices = (
 ) => {
   return useQuery<Service[]>({
     queryKey: ["services", search, category],
-    queryFn: () => getServices(search, category),
+
+    queryFn: () =>
+      getServices(search, category),
+
+    staleTime: 1000 * 60 * 5, // 5 minutes cache
+
+    enabled: true,
   });
 };

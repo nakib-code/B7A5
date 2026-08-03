@@ -18,8 +18,14 @@ export const useCreateReview = () => {
     onSuccess: () => {
       toast.success("Review submitted successfully.");
 
+      // Customer booking list update
       queryClient.invalidateQueries({
         queryKey: ["my-bookings"],
+      });
+
+      // যদি admin review list থাকে
+      queryClient.invalidateQueries({
+        queryKey: ["admin-bookings"],
       });
     },
 

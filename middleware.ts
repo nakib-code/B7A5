@@ -10,74 +10,45 @@ export function middleware(req: NextRequest) {
 
   const { pathname } = req.nextUrl;
 
-  if (!token) {
-    if (
-      pathname.startsWith("/dashboard") ||
-      pathname === "/" ||
-      pathname.startsWith("/services")
-    ) {
-      return NextResponse.redirect(
-        new URL("/auth/login", req.url)
-      );
+
+  // Auth pages
+  if (pathname.startsWith("/auth")) {
+
+    // যদি token থাকে login/register এ যেতে দিবে না
+    if (token) {
+      try {
+        jwtDecode<Payload>(token);
+
+        return NextResponse.redirect(
+          new URL("/", req.url)
+        );
+
+      } catch {
+        const response = NextResponse.next();
+
+        response.cookies.delete("accessToken");
+        response.cookies.delete("refreshToken");
+
+        return response;
+      }
     }
+
 
     return NextResponse.next();
   }
 
-  try {
-    const user = jwtDecode<Payload>(token);
 
-    if (pathname.startsWith("/auth")) {
-      return NextResponse.redirect(
-        new URL("/", req.url)
-      );
-    }
 
-    if (
-      pathname.startsWith("/dashboard/admin") &&
-      user.role !== "ADMIN"
-    ) {
-      return NextResponse.redirect(
-        new URL(`/dashboard/${user.role.toLowerCase()}`, req.url)
-      );
-    }
+  // Dashboard এখন middleware দিয়ে block করবে না
+  // কারণ HttpOnly cookie backend domain এ থাকে
 
-    if (
-      pathname.startsWith("/dashboard/customer") &&
-      user.role !== "CUSTOMER"
-    ) {
-      return NextResponse.redirect(
-        new URL(`/dashboard/${user.role.toLowerCase()}`, req.url)
-      );
-    }
-
-    if (
-      pathname.startsWith("/dashboard/technician") &&
-      user.role !== "TECHNICIAN"
-    ) {
-      return NextResponse.redirect(
-        new URL(`/dashboard/${user.role.toLowerCase()}`, req.url)
-      );
-    }
-
-    return NextResponse.next();
-  } catch {
-    const res = NextResponse.redirect(
-      new URL("/auth/login", req.url)
-    );
-
-    res.cookies.delete("accessToken");
-    res.cookies.delete("refreshToken");
-
-    return res;
-  }
+  return NextResponse.next();
 }
+
+
 
 export const config = {
   matcher: [
-    "/",
-    "/services/:path*",
-    "/dashboard/:path*",
     "/auth/:path*",
   ],
 };

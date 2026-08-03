@@ -1,8 +1,10 @@
 "use client";
 
-import { cancelBooking } from "@/services/booking/booking.api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import axios from "axios";
+
+import { cancelBooking } from "@/services/booking/booking.api";
 
 export const useCancelBooking = () => {
   const queryClient = useQueryClient();
@@ -10,16 +12,22 @@ export const useCancelBooking = () => {
   return useMutation({
     mutationFn: cancelBooking,
 
-    onSuccess: () => {
-      toast.success("Booking cancelled");
+    onSuccess: async () => {
+      toast.success("Booking cancelled successfully.");
 
-      queryClient.invalidateQueries({
+      await queryClient.invalidateQueries({
         queryKey: ["my-bookings"],
       });
     },
 
-    onError: () => {
-      toast.error("Failed to cancel booking");
+    onError: (error) => {
+      if (axios.isAxiosError(error)) {
+        toast.error(
+          error.response?.data?.message || "Failed to cancel booking."
+        );
+      } else {
+        toast.error("Something went wrong.");
+      }
     },
   });
 };
