@@ -28,6 +28,8 @@ export interface Service {
     user: {
       id: string;
       name: string;
+      email: string;
+      phone?: string | null;
       profileImg: string | null;
     };
   };

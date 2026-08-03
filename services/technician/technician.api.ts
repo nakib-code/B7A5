@@ -38,12 +38,17 @@ export const updateTechnicianProfile = async (
 };
 
 // Get technician bookings
-export const getTechnicianBookings = async (): Promise<TechnicianBooking[]> => {
+export const getTechnicianBookings = async (): Promise<
+  TechnicianBooking[]
+> => {
+
   const { data } = await axiosInstance.get(
     "/technician/bookings"
   );
 
+
   return data.data;
+
 };
 
 // Update booking status
