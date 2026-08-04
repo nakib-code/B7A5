@@ -6,9 +6,9 @@ A modern **Home Service Marketplace** built with **Next.js App Router**, **TypeS
 
 ## 🚀 Live Demo
 
-**Frontend:** https://your-frontend-url.vercel.app
+**Frontend:** https://fixitnow-eta-blush.vercel.app/
 
-**Backend API:** https://your-backend-api.vercel.app
+**Backend API:** https://fixitnow-backend-seven.vercel.app/
 
 ---
 
@@ -17,7 +17,7 @@ A modern **Home Service Marketplace** built with **Next.js App Router**, **TypeS
 **Frontend Repository**
 
 ```
-https://github.com/your-username/fixitnow-frontend
+https://github.com/nakib-code/B7A5
 ```
 
 ---
@@ -202,31 +202,31 @@ NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET=YOUR_UPLOAD_PRESET
 Clone the repository
 
 ```bash
-git clone https://github.com/your-username/fixitnow-frontend.git
+git clone https://github.com/nakib-code/B7A5.git
 ```
 
 Go to the project
 
 ```bash
-cd fixitnow-frontend
+cd B7A5
 ```
 
 Install dependencies
 
 ```bash
-npm install
+pnpm install
 ```
 
 Start development server
 
 ```bash
-npm run dev
+pnpm run dev
 ```
 
 Build production
 
 ```bash
-npm run build
+pnpm run build
 ```
 
 ---
@@ -237,10 +237,10 @@ npm run build
 
 ```
 Email:
-admin@example.com
+admin@gmail.com
 
 Password:
-********
+Admin@123
 ```
 
 ---
@@ -300,9 +300,9 @@ The application is fully responsive and optimized for:
 
 Full Stack Web Developer
 
-GitHub: https://github.com/your-username
+GitHub: https://github.com/nakib-code
 
-LinkedIn: https://www.linkedin.com/in/your-profile
+LinkedIn: https://www.linkedin.com/in/nakibul/
 
 ---
 

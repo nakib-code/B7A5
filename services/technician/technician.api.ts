@@ -10,7 +10,7 @@ import {
 // Get all technicians
 export const getTechnicians = async (): Promise<Technician[]> => {
   const { data } = await axiosInstance.get(
-    "/technician/get-all"
+    "/technician/"
   );
 
   return data.data;
